@@ -27,3 +27,7 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.title} - {self.amount}"
+    
+    @property
+    def user_full_name(self):
+        return f'{self.user.first_name} {self.user.last_name}'

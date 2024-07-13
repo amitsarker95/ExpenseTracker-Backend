@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #Here are some extranal installed applications
     'rest_framework',
+    'rest_framework.authtoken',
     'accounts',
     'expenses',
 ]
