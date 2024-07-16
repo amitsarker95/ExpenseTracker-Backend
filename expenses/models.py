@@ -70,6 +70,8 @@ class RecurringExpense(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.title} - {self.amount} ({self.recurrence_interval})"
+    
+    
 class Transaction(models.Model):
     TRANSACTION_TYPE_CHOICES = [
         ('EXPENSE', 'Expense'),
@@ -86,6 +88,8 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.title} - {self.amount} ({self.transaction_type})"
+    
+
 class SavingsGoal(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='savings_goals', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
