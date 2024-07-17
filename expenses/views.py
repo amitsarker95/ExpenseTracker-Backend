@@ -8,5 +8,5 @@ class ExpenseViewSet(viewsets.ModelViewSet):
     
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 

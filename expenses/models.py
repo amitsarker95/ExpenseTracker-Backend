@@ -18,7 +18,7 @@ class Category(models.Model):
 
 class Expense(models.Model):
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='exenses', on_delete=models.CASCADE, default=1)
+    # user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='exenses', on_delete=models.CASCADE, default=1)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
