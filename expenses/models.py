@@ -14,7 +14,7 @@ class Category(models.Model):
     name = models.CharField(max_length=50, choices=CATEGORY_CHOICES, unique=True)
 
     def __str__(self):
-        return self.get_name_display()
+        return self.name
 
 class Expense(models.Model):
 
