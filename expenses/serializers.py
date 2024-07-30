@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Expense, Income, Budget
+from .models import Category, Expense, Income, Budget, RecurringExpense
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,6 +44,12 @@ class BudgetSerializer(serializers.ModelSerializer):
     def get_category_choices(self, obj):
         categories = Category.objects.all()
         return CategorySerializer(categories, many=True).data
+    
+
+class RecurringExpenseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecurringExpense
+        fields = ['title', 'description', 'amount', 'category', 'start_date', 'recurrence_interval']
 
     
 
