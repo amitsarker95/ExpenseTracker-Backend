@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ExpenseSerializer, CategorySerializer, IncomeSerializer
-from .models import Expense, Category, Income
+from .serializers import ExpenseSerializer, CategorySerializer, IncomeSerializer, BudgetSerializer
+from .models import Expense, Category, Income, Budget
 
 
 class IncomeViewSet(ModelViewSet):
@@ -19,3 +19,7 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+
+class BudgetViewSet(ModelViewSet):
+    queryset = Budget.objects.all()
+    serializer_class = BudgetSerializer

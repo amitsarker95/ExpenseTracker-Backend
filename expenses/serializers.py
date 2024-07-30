@@ -36,7 +36,14 @@ class IncomeSerializer(serializers.ModelSerializer):
     
 
 class BudgetSerializer(serializers.ModelSerializer):
+    category_name = serializers.ReadOnlyField(source="category.name")
     class Meta:
         model = Budget
-        fields =['id','category','amount','start_date','end_date']
+        fields =['id','category','amount','start_date','end_date', 'category_name']
+
+    def get_category_choices(self, obj):
+        categories = Category.objects.all()
+        return CategorySerializer(categories, many=True).data
+
+    
 
