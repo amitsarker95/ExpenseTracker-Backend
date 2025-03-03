@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -10,6 +9,7 @@ from .serializers import ExpenseSerializer, CategorySerializer, \
     SavingsGoalSerializer
 
 from .models import Expense, Category, Income, Budget, RecurringExpense, SavingsGoal
+from .pagination import MyPagination
 
 
 class IncomeViewSet(APIView):
@@ -46,7 +46,7 @@ class ExpenseViewSet(ModelViewSet):
     
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
-    # permission_classes = [IsAuthenticated]
+    pagination_class = MyPagination
 
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
