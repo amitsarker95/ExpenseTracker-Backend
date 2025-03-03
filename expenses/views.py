@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from .serializers import ExpenseSerializer, CategorySerializer, \
     IncomeSerializer, BudgetSerializer , RecurringExpenseSerializer,\
     SavingsGoalSerializer
@@ -58,7 +60,7 @@ class CategoryViewSet(ModelViewSet):
 class BudgetViewSet(generics.ListCreateAPIView):
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
-    filter_class = BudgetFilterBackend
+    filter_backends = [DjangoFilterBackend, BudgetFilterBackend]
     filterset_fields = ['amount']
 
 class RecurringExpenseViewSet(ModelViewSet): 
