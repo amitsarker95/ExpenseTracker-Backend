@@ -3,6 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 
 from .serializers import ExpenseSerializer, CategorySerializer, \
     IncomeSerializer, BudgetSerializer , RecurringExpenseSerializer,\
@@ -10,6 +11,7 @@ from .serializers import ExpenseSerializer, CategorySerializer, \
 
 from .models import Expense, Category, Income, Budget, RecurringExpense, SavingsGoal
 from .pagination import MyPagination
+from .filters import BudgetFilterBackend
 
 
 class IncomeViewSet(APIView):
@@ -53,9 +55,11 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
 
 
-class BudgetViewSet(ModelViewSet):
+class BudgetViewSet(generics.ListCreateAPIView):
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
+    filter_class = BudgetFilterBackend
+    filterset_fields = ['amount']
 
 class RecurringExpenseViewSet(ModelViewSet): 
     queryset = RecurringExpense.objects.all()

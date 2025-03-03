@@ -45,7 +45,7 @@ class Income(models.Model):
 
 class Budget(models.Model):
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='budgets', on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='Budget')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     start_date = models.DateField()
     end_date = models.DateField()

@@ -8,7 +8,7 @@ router = DefaultRouter()
 router.register('expense', ExpenseViewSet, basename='expenses')
 router.register('category', CategoryViewSet, basename='categories')
 # router.register('income', IncomeViewSet, basename='income')
-router.register('budget', BudgetViewSet, basename='budget')
+# router.register('budget', BudgetViewSet, basename='budget')
 router.register('recurring', RecurringExpenseViewSet, basename='recurring')
 router.register('savings', SavingsGoalViewSet, basename='savings')
 urlpatterns = [
@@ -16,5 +16,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('income/', IncomeViewSet.as_view(), name='income'),
     path('income/<int:pk>/', IncomeDetailViewSet.as_view(), name='income-detail'),
+    path('budget/', BudgetViewSet.as_view(), name='budget'),
     
 ]
