@@ -52,9 +52,21 @@ class ExpenseViewSet(ModelViewSet):
     serializer_class = ExpenseSerializer
     pagination_class = MyPagination
 
-class CategoryViewSet(ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+class CategoryViewSet(APIView):
+    def get(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        if serializer is not None:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def post(self, request):
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 class BudgetViewSet(generics.ListCreateAPIView):
@@ -67,6 +79,17 @@ class RecurringExpenseViewSet(ModelViewSet):
     queryset = RecurringExpense.objects.all()
     serializer_class = RecurringExpenseSerializer
 
-class SavingsGoalViewSet(ModelViewSet):
-    queryset = SavingsGoal.objects.all()
-    serializer_class = SavingsGoalSerializer
+class SavingsGoalViewSet(APIView):
+    
+    def get(self, request):
+        saving_gols = SavingsGoal.objects.all()
+        serializer = SavingsGoalSerializer(saving_gols, many=True)
+        if serializer is not None:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        serializer = SavingsGoalSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
