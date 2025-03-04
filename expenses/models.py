@@ -2,16 +2,8 @@ from django.conf import settings
 from django.db import models
 
 class Category(models.Model):
-    CATEGORY_CHOICES = [
-        ('FOOD', 'Food'),
-        ('TRANSPORT', 'Transport'),
-        ('ENTERTAINMENT', 'Entertainment'),
-        ('HEALTH', 'Health'),
-        ('UTILITIES', 'Utilities'),
-        ('OTHER', 'Other'),
-    ]
 
-    name = models.CharField(max_length=50, choices=CATEGORY_CHOICES, unique=True)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name

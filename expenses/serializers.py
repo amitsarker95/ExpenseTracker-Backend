@@ -2,9 +2,15 @@ from rest_framework import serializers
 from .models import Category, Expense, Income, Budget, RecurringExpense, SavingsGoal
 
 class CategorySerializer(serializers.ModelSerializer):
+    CATEGORY_CHOICES = ['RENT','FOOD', 'TRANSPORT', 'ENTERTAINMENT', 'HEALTH', 'UTILITIES', 'OTHER']
     class Meta:
         model = Category
         fields = ['id', 'name']
+
+    def validate_name(self, value):
+        if value not in self.CATEGORY_CHOICES:
+            raise serializers.ValidationError("Invalid category name")
+        return value
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
