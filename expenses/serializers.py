@@ -21,7 +21,10 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Expense
-        fields = ['id','user_name','title','description','amount','category_name','category_choices','date']
+        fields = ['id','user_name','title','description','amount','category','category_name','category_choices','date']
+        extra_kwargs = {
+            'category': {'write_only': True}
+        }
 
     def get_category_choices(self, obj):
         categories = Category.objects.all()

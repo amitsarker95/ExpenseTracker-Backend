@@ -1,5 +1,6 @@
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
+from django.db import models
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -72,9 +73,22 @@ class ExpenseViewSet(ModelViewSet):
             end_date__gte=date
         ).first()
 
+        print(f"Category: {category}, Date: {date}")
+        print(Budget.objects.filter(category_id=category, start_date__lte=date, end_date__gte=date).values())
+
+
         if budget is None:
             return Response({'error': 'Budget for this category not found'}, status=status.HTTP_400_BAD_REQUEST)
         
+        total_expense = Expense.objects.filter(
+            category__id=category,
+            date__range=[budget.start_date, budget.end_date].aggregate(total=models.Sum('amount'))['total'] or 0
+        )
+        remaining_amount = budget.amount - total_expense
+        if remaining_amount < amount:
+            return Response({'error': 'You have exceeded the budget for this category'}, status=status.HTTP_400_BAD_REQUEST)
+        response = super().create(request, *args, **kwargs)
+        return response
 
 class CategoryViewSet(APIView):
     def get(self, request):
