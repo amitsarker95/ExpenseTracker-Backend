@@ -1,3 +1,4 @@
+from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
@@ -51,6 +52,29 @@ class ExpenseViewSet(ModelViewSet):
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
     pagination_class = MyPagination
+
+    def create(self, request, *args, **kwargs):
+        category = request.data.get('category')
+        amount = request.data.get('amount')
+        date = request.data.get('date', now().date())
+
+        if category or not amount:
+            return Response({'error': 'category and amount are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            ammount = float(amount)
+        except ValueError:
+            return Response({'error': 'amount must be a number'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        budget = Budget.objects.filter(
+            category__id=category,
+            start_date__lte=date,
+            end_date__gte=date
+        ).first()
+
+        if budget is None:
+            return Response({'error': 'Budget for this category not found'}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class CategoryViewSet(APIView):
     def get(self, request):
