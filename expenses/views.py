@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
 from django.db import models
@@ -59,11 +60,11 @@ class ExpenseViewSet(ModelViewSet):
         amount = request.data.get('amount')
         date = request.data.get('date', now().date())
 
-        if category or not amount:
+        if not category or not amount:
             return Response({'error': 'category and amount are required'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            ammount = float(amount)
+            amount = Decimal(amount)
         except ValueError:
             return Response({'error': 'amount must be a number'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -82,11 +83,17 @@ class ExpenseViewSet(ModelViewSet):
         
         total_expense = Expense.objects.filter(
             category__id=category,
-            date__range=[budget.start_date, budget.end_date].aggregate(total=models.Sum('amount'))['total'] or 0
-        )
-        remaining_amount = budget.amount - total_expense
+            date__range=[budget.start_date, budget.end_date]
+        ).aggregate(total=models.Sum('amount'))['total'] or 0
+        budget_amount = Decimal(budget.amount)
+        remaining_amount = budget_amount - total_expense
+        
         if remaining_amount < amount:
             return Response({'error': 'You have exceeded the budget for this category'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        budget.amount -= amount
+        budget.save()
+
         response = super().create(request, *args, **kwargs)
         return response
 
