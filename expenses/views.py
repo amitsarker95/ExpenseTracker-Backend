@@ -74,8 +74,8 @@ class ExpenseViewSet(ModelViewSet):
             end_date__gte=date
         ).first()
 
-        print(f"Category: {category}, Date: {date}")
-        print(Budget.objects.filter(category_id=category, start_date__lte=date, end_date__gte=date).values())
+        # print(f"Category: {category}, Date: {date}")
+        # print(Budget.objects.filter(category_id=category, start_date__lte=date, end_date__gte=date).values())
 
 
         if budget is None:
