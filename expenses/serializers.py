@@ -14,14 +14,13 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
-    
-    user_name = serializers.ReadOnlyField(source="user_full_name")
+    # category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all()) 
     category_name = serializers.ReadOnlyField(source="category.name")
     # category_choices = serializers.SerializerMethodField()
 
     class Meta:
         model = Expense
-        fields = ['id','user_name','title','description','amount','category','category_name','date']
+        fields = ['id','title','description','amount','category','category_name','date']
         extra_kwargs = {
             'category': {'write_only': True}
         }
