@@ -14,10 +14,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
-    # category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all()) 
     category_name = serializers.ReadOnlyField(source="category.name")
-    # category_choices = serializers.SerializerMethodField()
-
     class Meta:
         model = Expense
         fields = ['id','title','description','amount','category','category_name','date']
