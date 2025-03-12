@@ -76,9 +76,6 @@ class ExpenseViewSet(ModelViewSet):
             end_date__gte=date
         ).first()
 
-        # print(f"Category: {category}, Date: {date}")
-        # print(Budget.objects.filter(category_id=category, start_date__lte=date, end_date__gte=date).values())
-
 
         if budget is None:
             return Response({'error': 'Budget for this category not found'}, status=status.HTTP_400_BAD_REQUEST)
@@ -230,7 +227,6 @@ class TransferToSavingsView(APIView):
                 savings_goal.current_amount += total_savings
                 savings_goal.save()
 
-                # Update processed budgets
                 budgets.update(amount=0)
 
                 return Response({
