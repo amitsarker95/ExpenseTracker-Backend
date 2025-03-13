@@ -157,11 +157,9 @@ class BudgetViewSet(generics.ListCreateAPIView):
                 }
             )
 
-            # Update savings goal
             savings_goal.current_amount += total_savings
             savings_goal.save()
 
-            # Mark processed budgets
             expired_budgets.update(amount=0)
 
 class RecurringExpenseViewSet(ModelViewSet): 
