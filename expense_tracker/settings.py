@@ -70,11 +70,11 @@ WSGI_APPLICATION = 'expense_tracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'expense_tracker',
         'USER': 'amit',
         'PASSWORD': 'amitsarker95@',
-        'HOST': 'localhost',   
+        'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {'charset': 'utf8mb4'},
     }

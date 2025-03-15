@@ -9,7 +9,7 @@ class Category(models.Model):
         return self.name
 
 class Expense(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='expenses', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='expenses', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -25,7 +25,7 @@ class Expense(models.Model):
     
 
 class Income(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='incomes', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='incomes', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()
@@ -39,7 +39,7 @@ class Budget(models.Model):
         settings.AUTH_USER_MODEL,
         related_name='budgets',
         on_delete=models.CASCADE,
-        null=True  # Temporarily allow null
+        null=True
     )
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='Budget')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -51,7 +51,7 @@ class Budget(models.Model):
 
 
 class RecurringExpense(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recurring_expenses', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recurring_expenses', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -74,7 +74,7 @@ class Transaction(models.Model):
         ('INCOME', 'Income'),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='transactions', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='transactions', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -87,7 +87,7 @@ class Transaction(models.Model):
     
 
 class SavingsGoal(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='savings_goals', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='savings_goals', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     target_amount = models.DecimalField(max_digits=10, decimal_places=2)
     current_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
