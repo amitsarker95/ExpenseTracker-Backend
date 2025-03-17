@@ -76,24 +76,34 @@ class ExpenseViewSet(ModelViewSet):
             end_date__gte=date
         ).first()
 
-
         if budget is None:
             return Response({'error': 'Budget for this category not found'}, status=status.HTTP_400_BAD_REQUEST)
         
-        total_expense = Expense.objects.filter(
+        # Calculate total expenses for this budget period INCLUDING the new expense
+        total_expenses = Expense.objects.filter(
             category__id=category,
             date__range=[budget.start_date, budget.end_date]
-        ).aggregate(total=models.Sum('amount'))['total'] or 0
-        budget_amount = Decimal(budget.amount)
-        remaining_amount = budget_amount - total_expense
+        ).aggregate(total=models.Sum('amount'))['total'] or Decimal('0')
         
-        if remaining_amount < amount:
-            return Response({'error': 'You have exceeded the budget for this category'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        budget.amount -= amount
-        budget.save()
+        # Check if adding this expense would exceed the budget
+        if (total_expenses + amount) > budget.amount:
+            return Response({
+                'error': 'You have exceeded the budget for this category',
+                'budget_amount': str(budget.amount),
+                'current_expenses': str(total_expenses),
+                'remaining_amount': str(budget.amount - total_expenses),
+                'requested_amount': str(amount)
+            }, status=status.HTTP_400_BAD_REQUEST)
 
+        # Create the expense first
         response = super().create(request, *args, **kwargs)
+        
+        # If expense creation was successful, update the budget
+        if response.status_code == status.HTTP_201_CREATED:
+            # Update the budget with the new remaining amount
+            budget.amount = budget.amount - amount
+            budget.save()
+        
         return response
 
 class CategoryViewSet(APIView):
