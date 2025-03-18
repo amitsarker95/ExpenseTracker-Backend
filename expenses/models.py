@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.core.exceptions import ValidationError
+from decimal import Decimal
 
 class Category(models.Model):
 
@@ -46,8 +48,55 @@ class Budget(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['category', 'user'],
+                condition=models.Q(end_date__gte=models.F('start_date')),
+                name='unique_active_budget_per_category'
+            )
+        ]
+
+    def clean(self):
+        if self.start_date and self.end_date:
+            if self.start_date > self.end_date:
+                raise ValidationError("Start date must be before end date")
+
+            # Check for overlapping budgets
+            overlapping_budget = Budget.objects.filter(
+                category=self.category,
+                user=self.user,
+                start_date__lte=self.end_date,
+                end_date__gte=self.start_date
+            ).exclude(pk=self.pk).first()
+
+            if overlapping_budget:
+                raise ValidationError(
+                    f"A budget for {self.category.name} already exists for this period "
+                    f"(from {overlapping_budget.start_date} to {overlapping_budget.end_date})"
+                )
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.user.first_name} {self.category.name} - {self.amount}"
+        return f"{self.user.first_name if self.user else 'No User'} {self.category.name} - {self.amount}"
+
+    @property
+    def remaining_amount(self):
+        total_expenses = Expense.objects.filter(
+            category=self.category,
+            date__range=[self.start_date, self.end_date]
+        ).aggregate(total=models.Sum('amount'))['total'] or Decimal('0')
+        return self.amount - total_expenses
+
+    @property
+    def total_expenses(self):
+        return Expense.objects.filter(
+            category=self.category,
+            date__range=[self.start_date, self.end_date]
+        ).aggregate(total=models.Sum('amount'))['total'] or Decimal('0')
 
 
 class RecurringExpense(models.Model):
